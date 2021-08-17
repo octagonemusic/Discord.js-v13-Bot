@@ -25,6 +25,6 @@ module.exports = {
         .addField("Question", question)
         .addField("Answer", replies[result])
 
-        interaction.editReply({embeds: [ballembed]})
+        interaction.followUp({embeds: [ballembed]})
     }
 }

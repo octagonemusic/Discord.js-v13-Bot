@@ -17,7 +17,7 @@ module.exports = {
     run: async (client, interaction, args) => { 
 
     let [name] = args // it gonna replace " " by -
-    if (!name) return interaction.editReply("please provide a valid channel name."); 
+    if (!name) return interaction.followUp("please provide a valid channel name."); 
 
 
 
@@ -43,12 +43,12 @@ module.exports = {
             .addField("Link", `[${channel.body.items[0].snippet.channelTitle}](https://www.youtube.com/channel/${channel.body.items[0].id.channelId})`, true)
             .addField("Country", data.body.items[0].snippet.country ? `${data.body.items[0].snippet.country}`  : "No Country Provided", true)
             
-             interaction.editReply({embeds: [embed]});
+             interaction.followUp({embeds: [embed]});
         
         } catch(err) {
             const channel =  await fetch.get(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${name}&key=${config.google}&maxResults=1&type=channel`)
             console.log(err)
-            if (!channel.body.items[0]) return interaction.editReply("No channel result. Try again.");
+            if (!channel.body.items[0]) return interaction.followUp("No channel result. Try again.");
         }
     }
 }

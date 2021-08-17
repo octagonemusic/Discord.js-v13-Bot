@@ -11,6 +11,6 @@ module.exports = {
                 .setFooter(`Requested by ${interaction.user.tag}`, interaction.user.displayAvatarURL())
                 .setTimestamp()
                 .setColor('RANDOM')
-            interaction.editReply({embeds: [embed]})
+            interaction.followUp({embeds: [embed]})
         }
     }

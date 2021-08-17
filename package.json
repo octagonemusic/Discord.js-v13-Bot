@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/form-data": "^3.0.1",
     "@iamtraction/google-translate": "^1.1.2",
     "aki-api": "^6.0.5",
     "axios": "^0.21.1",

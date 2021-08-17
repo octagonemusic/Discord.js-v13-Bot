@@ -27,10 +27,10 @@ module.exports = {
 
 			await quickmongo.set(`afk-${interaction.user.id}+1`, time)
 
-		interaction.editReply({content: `Your AFK has been set: ${reason}`})
+		interaction.followUp({content: `Your AFK has been set: ${reason}`})
 		} catch (err) {
 			console.log(err)
-			interaction.editReply('👎 **| Could not set AFK status.**')
+			interaction.followUp('👎 **| Could not set AFK status.**')
 		}
 
 		try {

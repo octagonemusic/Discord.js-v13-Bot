@@ -57,7 +57,7 @@ module.exports = {
         )
             ]
 
-      const initialinteraction = await interaction.editReply({
+      const initialinteraction = await interaction.followUp({
         embeds: [embed],
         components: components(false)
       })

@@ -15,7 +15,7 @@ module.exports = {
     });
     const msg = fetchMessages.first();
 
-    interaction.editReply(
+    interaction.followUp(
       {embeds: [new MessageEmbed()
         .setAuthor(interaction.guild.name)
         .setTitle(`First Messsage in ${interaction.guild.name}`)

@@ -16,15 +16,15 @@ module.exports = {
            if(data){
             const enabled = data.Enabled === 1
             if(!enabled){
-                message.lineReply("Anti-Swear is already turned \`off\`.")
+                message.reply("Anti-Swear is already turned \`off\`.")
             } else {
                 data.Enabled = 0
-                message.lineReply("Anti-Swear has been successfully turned \`off\`.")
+                message.reply("Anti-Swear has been successfully turned \`off\`.")
             }
             await antiswearSchema.findOneAndUpdate(params, data)
 
            } else {
-            message.lineReply("Anti-Swear is already turned \`off\`.")
+            message.reply("Anti-Swear is already turned \`off\`.")
            }
        })
     }

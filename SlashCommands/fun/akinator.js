@@ -17,7 +17,7 @@ module.exports = {
       
           await aki.start();
       
-          const msg = await interaction.editReply({embeds: [new MessageEmbed()
+          const msg = await interaction.followUp({embeds: [new MessageEmbed()
             .setAuthor(`${interaction.user.username}, Question ${aki.currentStep + 1}`)
             .setTitle(aki.question)
             .setColor("RANDOM")
@@ -45,7 +45,7 @@ module.exports = {
       
                 collector.stop();
       
-                interaction.editReply({embeds: [new MessageEmbed()
+                interaction.followUp({embeds: [new MessageEmbed()
                   .setTitle("Is this your character?")
                   .setDescription(`**${aki.answers[0].name}**\n${aki.answers[0].description}\nRanking as **#${aki.answers[0].ranking}**\n\n[yes (**y**) / no (**n**)]`)
                   .setImage(aki.answers[0].absolute_picture_path)
@@ -60,7 +60,7 @@ module.exports = {
                   })
                   .then(collected => {
                     const isWinner = yes || y;
-                    interaction.editReply({embeds: [new MessageEmbed()
+                    interaction.followUp({embeds: [new MessageEmbed()
                       .setTitle(isWinner ? "Great! Guessed right one more time." : "Congratulations! You have beaten me, but I'll get you the next time!")
                       .setColor("RANDOM")
                       .setDescription("I love playing with you!")]});

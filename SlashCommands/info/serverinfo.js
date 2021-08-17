@@ -26,6 +26,6 @@ module.exports = {
         .addField(`Boost Level`, interaction.guild.premiumTier.toString(), true)
         .addField(`Total Boosts`, interaction.guild.premiumSubscriptionCount.toString(), true)
         .setFooter(`Requested by ${interaction.user.tag}`, interaction.user.displayAvatarURL({dynamic: true}))
-    interaction.editReply({embeds: [embed]});
+    interaction.followUp({embeds: [embed]});
 }
 }

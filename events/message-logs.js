@@ -6,7 +6,7 @@ client.on("messageDelete", async (message) => {
     if(message.author.bot) return ;
     if(!message.guild.id === "832467028802797578") return
     let string = message.content
-    let content = string.substring(0,900) + `...`
+    let content = string.substring(0,900)
     if (!string) content = "No text content"
 
     const embed = new MessageEmbed()
@@ -37,12 +37,12 @@ client.on("messageUpdate", async (oldMessage, newMessage) => {
 
     
     let string = oldMessage.content
-    let oldmsg = string.substring(0,900) + `...`
+    let oldmsg = string.substring(0,900)
     if (!string) oldmsg = "No text content."
 
     
     let string1 = newMessage.content
-    let newmsg = string1.substring(0,900) + `...`
+    let newmsg = string1.substring(0,900)
     if (!string1) newmsg = "No text content."
 
     const embed = new MessageEmbed()

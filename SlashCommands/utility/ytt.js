@@ -11,7 +11,7 @@ module.exports = {
         const { guild } = interaction
 
     let channel = interaction.member.voice.channel;
-    if(!channel) return interaction.editReply("You have to be in a voice channel to use this command!")
+    if(!channel) return interaction.followUp("You have to be in a voice channel to use this command!")
 
     fetch(`https://discord.com/api/v8/channels/${channel.id}/invites`, {
         method: "POST",
@@ -31,7 +31,7 @@ module.exports = {
     
     .then(res => res.json())
     .then(invite => {
-        if(!invite.code) return interaction.editReply("Sadly I was unable to start a YouTube Together activity.")
+        if(!invite.code) return interaction.followUp("Sadly I was unable to start a YouTube Together activity.")
         const e = new MessageEmbed()
         .setAuthor(guild.name)
         .setTitle(`__YouTube Together__!`)
@@ -46,7 +46,7 @@ module.exports = {
             .setURL(`https://discord.com/invite/${invite.code}`)
         )
 
-        interaction.editReply({
+        interaction.followUp({
           components: [row],
           embeds: [e]
       })

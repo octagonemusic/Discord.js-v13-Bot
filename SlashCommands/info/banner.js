@@ -18,7 +18,7 @@ module.exports = {
         let user = client.users.cache.get(name)
         if(!name) user = interaction.user
 
-        if(!user) return interaction.editReply("An unknown error has occured.")
+        if(!user) return interaction.followUp("An unknown error has occured.")
 
         axios.get(`https://discord.com/api/users/${user.id}`, {
             
@@ -46,16 +46,16 @@ module.exports = {
                 .setImage(image)
                 .setColor("RANDOM")
                 .setFooter(`Requested by ${interaction.user.tag}`, interaction.user.displayAvatarURL())
-                interaction.editReply({embeds: [embed]})
+                interaction.followUp({embeds: [embed]})
             } else {
                 if(accent_color) {
                 const embed = new MessageEmbed()
                 .setDescription(`${user.tag} does not have a banner, but they do have an accent color.`)
                 .setColor(accent_color)
 
-                interaction.editReply({embeds: [embed]})
+                interaction.followUp({embeds: [embed]})
                 } else {
-                    interaction.editReply(`${user.tag} does not have a banner nor an accent color.`)
+                    interaction.followUp(`${user.tag} does not have a banner nor an accent color.`)
                 }
             }
         })

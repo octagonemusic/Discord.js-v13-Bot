@@ -36,8 +36,11 @@ module.exports = async (client) => {
         const file = require(value);
         if (!file?.name) return;
         client.slashCommands.set(file.name, file);
+
+        if (["MESSAGE", "USER"].includes(file.type)) delete file.description;
         arrayOfSlashCommands.push(file);
     });
+    
     client.on("ready", async () => {
         // Register for a single guild
         await client.guilds.cache

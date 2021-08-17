@@ -23,6 +23,6 @@ module.exports = {
             .setColor("RANDOM")
             .setFooter(`Requested by ${interaction.user.tag}`, interaction.user.displayAvatarURL({ dynamic: true }))
 
-        interaction.editReply({embeds: [embed]})
+        interaction.followUp({embeds: [embed]})
     }
 }

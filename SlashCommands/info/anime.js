@@ -14,8 +14,8 @@ module.exports = {
     ],
     run: async(client, interaction, args) => {
         const [name] = args
-        if(!name) return interaction.editReply("Please specify name of anime!")
-        if(name === `boku no pico`) return interaction.editReply(`Don't search cursed stuff, you sick ass bastard`)
+        if(!name) return interaction.followUp("Please specify name of anime!")
+        if(name === `boku no pico`) return interaction.followUp(`Don't search cursed stuff, you sick ass bastard`)
 
 
         malScraper.getInfoFromName(name)
@@ -23,7 +23,7 @@ module.exports = {
             console.log(data)
             let string = data.synopsis
             const synopsis = string.substring(0, 900) + `...[Read More](${data.url})`
-            if(data.genres.includes('Hentai')) return interaction.editReply("Fucking pervert")
+            if(data.genres.includes('Hentai')) return interaction.followUp("Fucking pervert")
             const embed = new MessageEmbed()
             .setAuthor(interaction.guild.name)
             .setTitle(`Anime Details!`)
@@ -42,7 +42,7 @@ module.exports = {
             .addField(`MAL Stats`, `**Score: \`${data.score}\`\nNumber of scores: \`${data.scoreStats}\`\nRanked: \`${data.ranked}\`\nPopularity: \`${data.popularity}\`\nMembers: \`${data.members}\`\nFavorites: \`${data.favorites}\`**`, true)
             .setImage(data.picture)
             .setColor("RANDOM")
-            interaction.editReply({embeds: [embed]})
+            interaction.followUp({embeds: [embed]})
         })
         .catch((err) => console.log(err))
     }

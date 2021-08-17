@@ -19,8 +19,15 @@ client.on("interactionCreate", async (interaction) => {
                 });
             } else if (option.value) args.push(option.value);
         }
+        interaction.member = interaction.guild.members.cache.get(interaction.user.id);
 
         cmd.run(client, interaction, args);
+    }
+
+    if (interaction.isContextMenu()) {
+        await interaction.deferReply({ ephemeral: false });
+        const command = client.slashCommands.get(interaction.commandName);
+        if (command) command.run(client, interaction);
     }
 
     if(interaction.isButton()) {
