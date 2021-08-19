@@ -12,16 +12,8 @@ run: async (client, interaction, args) => {
     
     let mentionedMember = await interaction.guild.members.cache.get(interaction.targetId)
 
-    
-    var game = mentionedMember.presence.game 
 
-    
-    var status = mentionedMember.presence.status;
-    if(status == 'dnd') status = "Do Not Disturb"
-    if(status == 'online') status = "Online"
-    if(status == 'offline') status = "Offline"
-    if(status === 'idle') status = "Idle"
-
+   
     
     const roles = mentionedMember.roles.cache 
     .sort((a, b) => b.position - a.position)
@@ -47,8 +39,6 @@ run: async (client, interaction, args) => {
      .addField(`**Username: **`, mentionedMember.user.username || "None")  
      .addField(`**ID: **`, `${mentionedMember.id}`) 
      .addField(`**Avatar: **`, `[Click here to view Avatar](${mentionedMember.user.displayAvatarURL({ dynamic: true})})`) 
-     .addField(`**Status: **`, `${status}`) 
-     .addField(`**Game: **`, `${game || 'None'}`) 
      .addField(`**Account Created At: **`, `${moment(mentionedMember.user.createdAt).format("DD-MM-YYYY [at] HH:mm")}`)
      .addField(`**Joined The Server At: **`, `${moment(mentionedMember.joinedAt).format("DD-MM-YYYY [at] HH:mm")}`) 
      .addField(`**Roles: [${roles.length}]**`, `${displayRoles}`) 

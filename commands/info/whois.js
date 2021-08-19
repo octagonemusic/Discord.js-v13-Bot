@@ -15,15 +15,7 @@ run: async (client, message, args) => {
     
     let mentionedMember = message.mentions.members.first() || message.guild.members.cache.get(args[0]) || message.member 
 
-    
-    var game = mentionedMember.presence.game 
-
-    
-    var status = mentionedMember.presence.status;
-    if(status == 'dnd') status = "Do Not Disturb"
-    if(status == 'online') status = "Online"
-    if(status == 'offline') status = "Offline"
-    if(status === 'idle') status = "Idle"
+    if(!mentionedMember) return message.reply("An unknown error has occured.")
 
     
     const roles = mentionedMember.roles.cache 
@@ -49,9 +41,7 @@ run: async (client, message, args) => {
      .addField(`**Tag: **`, `${mentionedMember.user.tag}`) 
      .addField(`**Username: **`, mentionedMember.user.username || "None")  
      .addField(`**ID: **`, `${mentionedMember.id}`) 
-     .addField(`**Avatar: **`, `[Click here to view Avatar](${mentionedMember.user.displayAvatarURL({ dynamic: true})})`) 
-     .addField(`**Status: **`, `${status}`) 
-     .addField(`**Game: **`, `${game || 'None'}`) 
+     .addField(`**Avatar: **`, `[Click here to view Avatar](${mentionedMember.user.displayAvatarURL({ dynamic: true})})`)
      .addField(`**Account Created At: **`, `${moment(mentionedMember.user.createdAt).format("DD-MM-YYYY [at] HH:mm")}`)
      .addField(`**Joined The Server At: **`, `${moment(mentionedMember.joinedAt).format("DD-MM-YYYY [at] HH:mm")}`) 
      .addField(`**Roles: [${roles.length}]**`, `${displayRoles}`) 

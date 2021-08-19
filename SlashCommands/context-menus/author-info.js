@@ -9,17 +9,6 @@ run: async (client, interaction, args) => {
 
     
     const msg = await interaction.channel.messages.fetch(interaction.targetId)
-    
-
-    
-    var game = msg.member.presence.game 
-
-    
-    var status = msg.member.presence.status;
-    if(status == 'dnd') status = "Do Not Disturb"
-    if(status == 'online') status = "Online"
-    if(status == 'offline') status = "Offline"
-    if(status === 'idle') status = "Idle"
 
     
     const roles = msg.member.roles.cache 
@@ -45,9 +34,7 @@ run: async (client, interaction, args) => {
      .addField(`**Tag: **`, `${msg.author.tag}`) 
      .addField(`**Username: **`, msg.author.username || "None")  
      .addField(`**ID: **`, `${msg.author.id}`) 
-     .addField(`**Avatar: **`, `[Click here to view Avatar](${msg.author.displayAvatarURL({ dynamic: true})})`) 
-     .addField(`**Status: **`, `${status}`) 
-     .addField(`**Game: **`, `${game || 'None'}`) 
+     .addField(`**Avatar: **`, `[Click here to view Avatar](${msg.author.displayAvatarURL({ dynamic: true})})`)
      .addField(`**Account Created At: **`, `${moment(msg.author.createdAt).format("DD-MM-YYYY [at] HH:mm")}`)
      .addField(`**Joined The Server At: **`, `${moment(msg.author.joinedAt).format("DD-MM-YYYY [at] HH:mm")}`) 
      .addField(`**Roles: [${roles.length}]**`, `${displayRoles}`) 

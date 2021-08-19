@@ -18,7 +18,7 @@ module.exports = {
             if(!enabled){
                 message.reply("Anti-spam is already turned \`off\`.")
             } else {
-                data.Enabled = 0
+                data.enabled = 0
                 message.reply("Anti-spam has been successfully turned \`off\`.")
             }
             await antispamSchema.findOneAndUpdate(params, data)
