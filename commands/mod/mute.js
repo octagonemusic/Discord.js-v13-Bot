@@ -37,7 +37,7 @@ module.exports = {
 			const rrembed = new Discord.MessageEmbed()
 				.setAuthor(message.guild.name)
 				.setTitle('Error!')
-				.setDescription(`**${Member.username.tag} is already muted.**`)
+				.setDescription(`**${Member.user.tag} is already muted.**`)
 				.setColor('RANDOM')
 				.setTimestamp()
 			message.channel.send({embeds: [rrembed]})

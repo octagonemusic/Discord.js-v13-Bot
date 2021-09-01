@@ -28,7 +28,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 10000) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501798324535306'))
-          const dorianembed = new Discord.MessageEmbed()
+          const dorianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Dorian\` role! Chat more to earn more roles and permissions!`)
@@ -39,7 +39,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 28900) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501766650069023'))
-          const phrygianembed = new Discord.MessageEmbed()
+          const phrygianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Phrygian\` role! Chat more to earn more roles and permissions!`)
@@ -50,7 +50,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 48400) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501737587474482'))
-          const lydianembed = new Discord.MessageEmbed()
+          const lydianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Lydian\` role! Chat more to earn more roles and permissions!`)
@@ -61,7 +61,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 90000) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501733603278889'))
-          const mixolydianembed = new Discord.MessageEmbed()
+          const mixolydianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Mixolydian\` role! Chat more to earn more roles and permissions!`)
@@ -72,7 +72,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 122500) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501731430498304'))
-          const aeolianembed = new Discord.MessageEmbed()
+          const aeolianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Aeolian\` role! Chat more to earn more roles and permissions!`)
@@ -83,7 +83,7 @@ client.on("messageCreate", async(message) => {
         }
         if (lvl.xp === 193600) {
           Member.roles.add(message.guild.roles.cache.find(r => r.id === '832501728817446932'))
-          const locrianembed = new Discord.MessageEmbed()
+          const locrianembed = new MessageEmbed()
             .setAuthor('ℭ𝔬𝔫𝔠𝔢𝔯𝔱𝔬 𝔡𝔦 ℭ𝔲𝔩𝔱𝔲𝔯𝔞')
             .setTitle('Congratulations!')
             .setDescription(`You have earned the \`Locrian\` role! Chat more to earn more roles and permissions!`)

@@ -1,13 +1,7 @@
-const Discord = require('discord.js')
-const nodeosu = require('node-osu')
-const config = require('../../config.json')
-const osu = new nodeosu.Api(config.apikey, { // Set your API Key in config.json
-    resAsError: true,
-    completeScores: true, // When fetching scores also fetch the beatmap they are for (Allows getting accuracy) (default: false)
-    parseNumeric: true // Reject on not found instead of returning nothing. (default: true)
-})
+const { MessageEmbed, MessageButton, MessageActionRow } = require('discord.js')
+const fetch = require('node-fetch')
 const emo_config = require('../../emoji_config.json')
-const osuSchema = require('../../schemas/osu-schema')
+const osuSchema = require("../../schemas/osu-schema")
 
 const difficultyRanks = {
     A: `${emo_config.A}`,
@@ -23,56 +17,192 @@ const difficultyRanks = {
 }
 
 module.exports = {
-
     name: "recent",
     aliases: ["rs"],
-    run: async (client, message, args) => {
-        const target = message.mentions.members.first() || message.member
-
-        await osuSchema.findOne({ userId: target.id }, async (err, data) => {
-            if (data) {
-
-                let user = args.join(" ")
-                if (message.mentions.users.first() || !args.length) user = data.osuuser
-                const au = await osu.getUser({ u: user })
-                osu.getUserRecent({ u: user }).then(scores => {
-
-
-
-                    const embed = new Discord.MessageEmbed()
-                        .setAuthor(`Recent map played by ${user}`)
-                        .setTitle(`${scores[0].beatmap.title}`)
-                        .setThumbnail(`http://s.ppy.sh/a/${au.id}`)
-                        .setURL(`https://osu.ppy.sh/beatmapsets/${scores[0].beatmap.beatmapSetId}`)
-                        .setDescription(`**Difficulty:** ${scores[0].beatmap.version} (${scores[0].beatmap.difficulty.rating}★)\n\n**Mods:** ${scores[0].mods}\n\n**Score**: ${scores[0].score.toLocaleString()}\n\n**Rank:** ${difficultyRanks[scores[0].rank]}\n\n**Accuracy:** ${Math.round(scores[0].accuracy * 100) + '%'}\n\n**Max Combo:** ${scores[0].maxCombo}/${scores[0].beatmap.maxCombo}\n\n **Played at:** ${scores[0].date}`)
-                        .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL())
-                        .setColor("RANDOM")
-                    message.reply({ embeds: [embed] })
-                });
-
-            } else {
-                if (message.mentions.users.first() || !args.length) {
-                    message.reply("The user has not linked their osu! account with the bot.")
-                } else {
-                    let user = args.join(" ")
-                    if (message.mentions.users.first() || !args.length) user = data.osuuser
-                    const au = await osu.getUser({ u: user })
-                    osu.getUserRecent({ u: user }).then(scores => {
-
-
-
-                        const embed = new Discord.MessageEmbed()
-                            .setAuthor(`Recent map played by ${user}`)
-                            .setTitle(`${scores[0].beatmap.title}`)
-                            .setThumbnail(`http://s.ppy.sh/a/${au.id}`)
-                            .setURL(`https://osu.ppy.sh/beatmapsets/${scores[0].beatmap.beatmapSetId}`)
-                            .setDescription(`**Difficulty:** ${scores[0].beatmap.version} (${scores[0].beatmap.difficulty.rating}★)\n\n**Mods:** ${scores[0].mods}\n\n**Score**: ${scores[0].score.toLocaleString()}\n\n**Rank:** ${difficultyRanks[scores[0].rank]}\n\n**Accuracy:** ${Math.round(scores[0].accuracy * 100) + '%'}\n\n**Max Combo:** ${scores[0].maxCombo}/${scores[0].beatmap.maxCombo}\n\n **Played at:** ${scores[0].date}`)
-                            .setFooter(`Requested by ${message.author.tag}`, message.author.displayAvatarURL())
-                            .setColor("RANDOM")
-                        message.reply({ embeds: [embed] })
-                    })
-                }
+    description: "Shows the stats of your most recent osu! play.",
+    run: async(client, message, args) => {
+        fetch("https://osu.ppy.sh/oauth/token", {
+    method: 'post',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        "grant_type": "client_credentials",
+        "client_id": 1, //insert your client id you get from the osu! website
+        "client_secret": "secret", //insert you clien secret you get from the osu! website
+        "scope": "public"
+    })
+})
+.then(response => {
+    return response.json()    
+})
+.then(async (res) => {
+    const target = message.mentions.members.first() || message.member
+    await osuSchema.findOne({ userId: target.id}, async(err, data) => {
+         if(data) {
+          let user = args.join(" ")
+          if(message.mentions.users.first() || !args.length) user = data.osuuser
+          
+              fetch(`https://osu.ppy.sh/api/v2/users/${user}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${res.access_token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
             }
-        })
-    }
-}
+        }).then(info => {
+            return info.json()
+        }).then(info => {
+            
+                console.log(info)
+
+                let infoid;
+                if (info.id === infoid) return message.reply("The specified user's recent replay hasn't been found on the osu! Bancho server.")
+
+                const url = new URL(
+                    `https://osu.ppy.sh/api/v2/users/${info.id}/scores/recent`
+                );
+                
+                let params = {
+                    "include_fails": "1",
+                    "mode": "osu",
+                    "limit": "1",
+                };
+                Object.keys(params)
+                    .forEach(key => url.searchParams.append(key, params[key]));
+                
+                let headers = {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${res.access_token}`
+                };
+                
+                
+                    fetch(url, {
+                    method: "GET",
+                    headers,
+                }).then(response => response.json())
+                .then(([response]) => {
+                    console.log(response)
+                    
+                    let xd;
+                    if(response === xd) return message.reply("The specified user's recent replay has not been found on the osu! Bancho server.")
+                    fetch(`https://osu.ppy.sh/api/v2/beatmaps/${response.beatmap.id}`, {
+                          method: "GET",
+                          headers: {
+                              "Authorization": `Bearer ${res.access_token}`,
+                              "Content-Type": "application/json",
+                              "Accept": "application/json",
+                          }
+                      }).then(beatmap => {
+                          return beatmap.json()
+                      }).then(beatmap => {
+
+                        
+                        
+                        const embed = new MessageEmbed()
+                            .setAuthor(`Recent osu! Standard play for ${response.user.username}`, response.user.avatar_url)
+                            .setTitle(`${beatmap.beatmapset.title} [${response.beatmap.version}] [${response.beatmap.difficulty_rating}★]`)
+                            .setDescription(
+                                `**Mods:** ${[response.mods || "No Mods"]}\n\n**Rank:** ${difficultyRanks[response.rank]}\n\n**PP:** ${(Math.round(response.pp *100))/100 || 0}\n\n**Accuracy:** ${(Math.round(response.accuracy * 10000))/100}%\n\n**Score:** ${response.score.toLocaleString()}\n\n**Max Combo:** x${response.max_combo}/${beatmap.max_combo}`
+                            )
+                            .setURL(response.beatmap.url)
+                            .setColor("RANDOM")
+                            .setFooter(`Requested by ${message.author.tag} | osu! Bancho server`, message.author.displayAvatarURL({dynamic: true}))
+                            .setThumbnail(response.beatmapset.covers.list)
+            
+                            message.reply({embeds: [embed]})
+                      })
+                        
+                })
+
+            })
+        } else {
+            if(message.mentions.users.first() || !args.length){
+            message.reply("The user has not linked their osu! account with the bot.")
+          } else {
+            let user = args.join(" ")
+          fetch(`https://osu.ppy.sh/api/v2/users/${user}`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${res.access_token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+            }
+        }).then(info => {
+            return info.json()
+        }).then(info => {
+            
+                console.log(info)
+
+                let infoid;
+                if (info.id === infoid) return message.reply("The specified user's recent replay hasn't been found on the osu! Bancho server.")
+        
+                const url = new URL(
+                    `https://osu.ppy.sh/api/v2/users/${info.id}/scores/recent`
+                );
+                
+                let params = {
+                    "include_fails": "1",
+                    "mode": "osu",
+                    "limit": "1",
+                };
+                Object.keys(params)
+                    .forEach(key => url.searchParams.append(key, params[key]));
+                
+                let headers = {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${res.access_token}`
+                };
+                
+                fetch(url, {
+                    method: "GET",
+                    headers,
+                }).then(response => response.json())
+                .then(([response]) => {
+                  console.log(response)
+                  let xd;
+                  if(response === xd) return message.reply("The specified user's recent replay has not been found on the osu! Bancho server.")
+
+                    fetch(`https://osu.ppy.sh/api/v2/beatmaps/${response.beatmap.id}`, {
+                          method: "GET",
+                          headers: {
+                              "Authorization": `Bearer ${res.access_token}`,
+                              "Content-Type": "application/json",
+                              "Accept": "application/json",
+                          }
+                      }).then(beatmap => {
+                          return beatmap.json()
+                      }).then(beatmap => {
+                        
+                        let mods = []
+                        if (mods) {
+                            mods = "No Mods"
+                        } else {
+                            mods = [response.mods]
+                        }
+
+                        const embed = new MessageEmbed()
+                            .setAuthor(`Recent osu! Standard play for ${response.user.username}`, response.user.avatar_url)
+                            .setTitle(`${beatmap.beatmapset.title} [${response.beatmap.version}] [${response.beatmap.difficulty_rating}★]`)
+                            .setDescription(
+                                `**Mods:** ${response.mods}\n\n**Rank:** ${difficultyRanks[response.rank]}\n\n**PP:** ${(Math.round(response.pp *100))/100 || 0}\n\n**Accuracy:** ${(Math.round(response.accuracy * 10000))/100}%\n\n**Score:** ${response.score.toLocaleString()}\n\n**Max Combo:** x${response.max_combo}/${beatmap.max_combo}`
+                            )
+                            .setURL(response.beatmap.url)
+                            .setColor("RANDOM")
+                            .setFooter(`Requested by ${message.author.tag} | osu! Bancho server`, message.author.displayAvatarURL({dynamic: true}))
+                            .setThumbnail(response.beatmapset.covers.list)
+            
+                            message.reply({embeds: [embed]})
+                      })
+                    })
+              })
+          } 
+          
+        }
+    })
+
+})
+    }}
