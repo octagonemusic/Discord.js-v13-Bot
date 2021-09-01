@@ -3,7 +3,7 @@ const moment = require("moment");
 
 module.exports = { 
 
-name : 'Author Info',
+name : 'Author Information',
 type: "MESSAGE",
 run: async (client, interaction, args) => {
 
