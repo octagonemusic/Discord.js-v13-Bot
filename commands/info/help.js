@@ -1,99 +1,107 @@
-const { MessageEmbed, MessageActionRow, MessageSelectMenu, Message } = require("discord.js")
+const { MessageEmbed } = require("discord.js");
+const { readdirSync } = require("fs");
+const prefix = require("../../config.json").prefix;
 
 module.exports = {
   name: "help",
-  aliases: ["h", "commands"],
-  description: "Shows list of available commands!",
-  run: async(client, message, args) => {
+  aliases : ['h', 'commands'],
+  description: "Shows all available bot commands.",
+  run: async (client, message, args) => {
 
-    const directories = [
-      ...new Set(client.commands.map((cmd) => cmd.directory))
-    ]
 
-    const formatString = (str) => `${str[0].toUpperCase()}${str.slice(1).toLowerCase()}`
+    const roleColor =
+      message.guild.me.displayHexColor === "#000000"
+        ? "#ffffff"
+        : message.guild.me.displayHexColor;
 
-    const categories = directories.map((dir) => {
-      const getCommands = client.commands.filter((cmd) => cmd.directory === dir).map(cmd => {
-        return {
-          name: cmd.name || "There is no name.",
-          aliases: cmd.aliases || "There are no aliases for this command",
-          description: cmd.description || "There is no description for this command."
-        }
-      })
+    if (!args[0]) {
+      let categories = [];
 
-      return {
-        directory: formatString(dir),
-        commands: getCommands,
+      readdirSync("./commands/").forEach((dir) => {
+        const commands = readdirSync(`./commands/${dir}/`).filter((file) =>
+          file.endsWith(".js")
+        );
+
+        const cmds = commands.map((command) => {
+          let file = require(`../../commands/${dir}/${command}`);
+
+          if (!file.name) return "No command name.";
+
+          let name = file.name.replace(".js", "");
+
+          return `\`${name}\``;
+        });
+
+        let data = new Object();
+
+        data = {
+          name: dir.toUpperCase(),
+          value: cmds.length === 0 ? "In progress." : cmds.join(" "),
+        };
+
+        categories.push(data);
+      });
+
+      const embed = new MessageEmbed()
+        .setAuthor(`Hi! I am ${client.user.tag}, a custom bot made for this server!`)
+        .setTitle("📬 Need help? Here are all of my commands:")
+        .addFields(categories)
+        .setDescription(
+          `**Use \`${prefix}help\` followed by a command name to get more additional information on a command. For example: \`${prefix}help ban\`.**`
+        )
+        .setFooter(
+          `Requested by ${message.author.tag}`,
+          message.author.displayAvatarURL({ dynamic: true })
+        )
+        .setTimestamp()
+        .setColor(roleColor);
+      return message.reply({embeds: [embed]});
+    } else {
+      const command =
+        client.commands.get(args[0].toLowerCase()) ||
+        client.commands.find(
+          (c) => c.aliases && c.aliases.includes(args[0].toLowerCase())
+        );
+
+      if (!command) {
+        const embed = new MessageEmbed()
+          .setTitle(`Invalid command! Use \`${prefix}help\` for all of my commands!`)
+          .setColor("FF0000");
+        return message.reply({embeds: [embed]});
       }
-    })
 
-    const embed = new MessageEmbed()
-      .setAuthor(message.guild.name)
-      .setTitle(`Help!`)
-      .setDescription(`${message.author.tag}, Welcome to the help section! My prefix here is \`!\``)
-      .addFields(
-        {
-          name: `Get my commands!`,
-          value: `To view all my commands, please select the various categories from the dropdown below!`
-        }
-      )
-      .setColor("RANDOM")
-      .setFooter(`Help requested by ${message.author.tag} | Bot created by ${message.guild.members.cache.get("717166815943327764").user.tag}`, message.author.displayAvatarURL({dynamic: true}))
-
-      const components = (state) => [
-        new MessageActionRow().addComponents(
-          new MessageSelectMenu()
-            .setCustomId("help-menu")
-            .setPlaceholder('Please select a command category')
-            .setDisabled(state)
-            .addOptions(
-              categories.map((cmd) => {
-                return {
-                  label: cmd.directory,
-                  value: cmd.directory.toLowerCase(),
-                  description: `Commands from ${cmd.directory} category`
-                }
-              })
-            )
+      const embed = new MessageEmbed()
+        .setTitle("__Command Details!__")
+        .addField("PREFIX:", `\`${prefix}\``)
+        .addField(
+          "COMMAND:",
+          command.name ? `\`${command.name}\`` : "No name for this command."
         )
-            ]
-
-      const initialMessage = await message.reply({
-        embeds: [embed],
-        components: components(false)
-      })
-
-      const collector = message.channel.createMessageComponentCollector({
-        componentType: "SELECT_MENU"
-      })
-
-      collector.on("collect", (interaction) => {
-        const [ directory ] = interaction.values
-        const category = categories.find(
-          (x) => x.directory.toLowerCase() === directory
+        .addField(
+          "ALIASES:",
+          command.aliases
+            ? `\`${command.aliases.join("` `")}\``
+            : "No aliases for this command."
         )
-      
-      const categoryEmbed = new MessageEmbed()
-          .setAuthor(message.guild.name)
-          .setTitle(`${directory} Commands`)
-          .setDescription("Here are the list of commands!")
-          .setColor("RANDOM")
-          .setFooter(`Requested by ${interaction.user.tag} | Bot created by ${message.guild.members.cache.get("717166815943327764").user.tag}`, interaction.user.displayAvatarURL({dynamic: true}))
-          .addFields(
-            category.commands.map((cmd) => {
-              return {
-                name: `\`${cmd.name}\``,
-                value: cmd.description,
-                inline: true,
-              }
-            })
-          )
-        interaction.update({embeds: [categoryEmbed]})
-      })
-
-      collector.on("end", () => {
-        initialMessage.edit({components: components(true)})
-      })
-    //console.log(categories)
-  }
-}
+        .addField(
+          "USAGE:",
+          command.usage
+            ? `\`${prefix}${command.name} ${command.usage}\``
+            : `\`${prefix}${command.name}\``
+        )
+        .addField(
+          "DESCRIPTION:",
+          command.description
+            ? command.description
+            : "No description for this command."
+        )
+        .setFooter(
+          `Requested by ${message.author.tag}`,
+          message.author.displayAvatarURL({ dynamic: true })
+        )
+        .setTimestamp()
+        .setColor(roleColor);
+      return message.reply({embeds: [embed]});
+    }
+  },
+};
