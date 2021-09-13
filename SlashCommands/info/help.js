@@ -20,7 +20,7 @@ module.exports = {
     const roleColor =
       interaction.guild.me.displayHexColor === "#000000"
         ? "#ffffff"
-        : message.guild.me.displayHexColor;
+        : interaction.guild.me.displayHexColor;
 
     if (!name) {
       let categories = [];
